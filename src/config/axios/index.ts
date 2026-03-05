@@ -1,6 +1,6 @@
 // config/axios.ts
 import axios from "axios";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -61,8 +61,8 @@ api.interceptors.response.use(
             message.toLowerCase().includes("unauthenticated") ||
             message.toLowerCase().includes("invalid token"))))
     ) {
-      Cookies.remove("refreshToken");
-      Cookies.remove("accessToken");
+    //   Cookies.remove("refreshToken");
+    //   Cookies.remove("accessToken");
 
       if (typeof window !== "undefined") {
         // window.location.href = "/login";
