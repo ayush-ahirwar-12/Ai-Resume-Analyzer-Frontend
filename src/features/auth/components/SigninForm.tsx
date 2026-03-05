@@ -1,12 +1,21 @@
 import React from 'react'
+import LabelInput from './LabelInput'
+import { useForm } from 'react-hook-form'
 
 const SigninForm = () => {
+
+const {register,handleSubmit} = useForm<{
+  email:String,
+  password:String
+
+}>()
+
   return (
     <div>
-              <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">
+      <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">
         Sign in to Your Account
       </h1>
-            <form className="mt-8 space-y-6">
+      {/* <form className="mt-8 space-y-6">
         <LabelInput
           label="Email"
           placeholder="your email"
@@ -58,7 +67,7 @@ const SigninForm = () => {
           <FcGoogle className="text-xl" />
           Continue with Google
         </button>
-      </form>
+      </form> */}
     </div>
   )
 }
