@@ -1,21 +1,108 @@
-import React from 'react'
+"use client";
+
+
+import React, { useState } from 'react'
 import LabelInput from './LabelInput'
 import { useForm } from 'react-hook-form'
+import { useLogin } from '../hooks/useAuthApi'
+import { CiMail } from 'react-icons/ci'
+import { FcGoogle } from 'react-icons/fc'
+import Cookies from "js-cookie";
+import { setUser } from '@/redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { AlertCircle } from 'lucide-react';
+
 
 const SigninForm = () => {
 
-const {register,handleSubmit} = useForm<{
-  email:String,
-  password:String
+  const [errormsg, seterrormsg] = useState("")
+  const dispatch = useDispatch();
+  const router = useRouter();
+const searchParams = useSearchParams();
+const redirect = searchParams.get("redirect");
+const safeRedirect = redirect && redirect.startsWith("/") ? redirect :null;
 
-}>()
+  const { register, handleSubmit } = useForm<{
+    email: string,
+    password: string
+
+  }>()
+
+  const { mutate: loginUser, isPending: isLoggingIn, error } = useLogin();
+
+  const onSubmit = (formData: { email: string, password: string }) => {
+    seterrormsg("");
+
+    const sendData = new FormData();
+    sendData.append("email", formData.email);
+    sendData.append("password", formData.password);
+
+    loginUser(sendData, {
+      onSuccess: (res: {
+        data: {
+          token: string,
+          user: {
+            _id: string,
+            email: string,
+            firstName: string,
+            lastName: string,
+            role?:{name:string},
+            isVerified:boolean
+          }
+        }
+      })=>{
+        Cookies.set("access",res.data.token);
+        Cookies.set("role",res.data.user?.role?.name||"user")
+
+          dispatch(
+          setUser({
+            id: res.data.user._id,
+            email: res.data.user.email,
+            firstName: res.data.user.firstName,
+            lastName: res.data.user.lastName,
+            role: res.data.user?.role?.name || "user",
+            isVerified: res.data.user.isVerified,
+          })
+        );
+        if (res.data.user?.role?.name === "admin") {
+          router.push(safeRedirect || "/admin");
+        } else {
+          router.push(safeRedirect || "/candidate");
+        }
+      },
+            onError: (err: {
+        response?: { data?: { message: string } };
+        message: string;
+      }) => {
+        const message =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Invalid email or password. Please try again.";
+        seterrormsg(message);
+      },
+
+  })
+
+
+
+  }
 
   return (
-    <div>
+    <div className="w-full h-full font-[satoshi] bg-white rounded-2xl py-10 px-[20%] flex flex-col justify-center">
       <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">
         Sign in to Your Account
       </h1>
-      {/* <form className="mt-8 space-y-6">
+            {(errormsg || error) && (
+        <div className="flex items-center gap-3 bg-red-50 text-red-700 px-5 py-3 rounded-lg border border-red-200">
+          <AlertCircle size={20} />
+          <p className="text-sm font-medium">
+            {errormsg || "Something went wrong. Please try again."}
+          </p>
+        </div>
+      )}
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <LabelInput
           label="Email"
           placeholder="your email"
@@ -67,7 +154,16 @@ const {register,handleSubmit} = useForm<{
           <FcGoogle className="text-xl" />
           Continue with Google
         </button>
-      </form> */}
+      </form>
+      <p className="text-center text-gray-600 text-sm mt-8">
+        Don’t have an account?{" "}
+        <a
+          href="/register"
+          className="text-[#4C62ED] underline font-medium hover:text-[#3a4cd1]"
+        >
+          Register
+        </a>
+      </p>
     </div>
   )
 }

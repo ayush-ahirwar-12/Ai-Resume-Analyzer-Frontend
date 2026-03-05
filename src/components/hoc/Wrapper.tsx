@@ -1,3 +1,4 @@
+"use client";
 import { store } from '@/config/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { useState } from 'react'

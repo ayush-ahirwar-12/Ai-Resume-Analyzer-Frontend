@@ -1,10 +1,12 @@
+export const dynamic = "force-dynamic";
+
+
 import SigninForm from '@/features/auth/components/SigninForm'
 import React from 'react'
 
 const page = () => {
-  return (
-    <div><SigninForm/>  </div>
-  )
+  return <SigninForm/>
+  
 }
 
 export default page
