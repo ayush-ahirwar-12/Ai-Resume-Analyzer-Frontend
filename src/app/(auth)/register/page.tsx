@@ -1,7 +1,8 @@
+import SignupForm from '@/features/auth/components/SignupForm'
 import React from 'react'
 
 const page = () => {
-  return 
+  return <SignupForm/>
 }
 
 export default page

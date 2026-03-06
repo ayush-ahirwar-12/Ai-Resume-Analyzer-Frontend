@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 export const useRegisterApi = () => {
     return useMutation({
         mutationKey:["register"],
-        mutationFn: (data:FormData) => api.register(data);
+        mutationFn: (data:FormData) => api.register(data),
         retry:0
     })
 }
