@@ -6,7 +6,6 @@ export default function UserHomePage(){
 
     return(
         <div>
-        <Navbar/>
         <Home/>
         </div>
     ) 

@@ -12,7 +12,7 @@ const userLayout=async({children}:{children:React.ReactNode})=>{
     if(!user){
             console.log("user-->",user);
 
-        redirect("/login");
+        redirect("/");
     }else{
         if(!user?.isVerified){
 
