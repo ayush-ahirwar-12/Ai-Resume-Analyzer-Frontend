@@ -1,4 +1,4 @@
-import Navbar from '@/components/ui/Navbar'
+import Navbar from '@/components/Navbar'
 import Home from '@/features/home/Home'
 import React from 'react'
 
