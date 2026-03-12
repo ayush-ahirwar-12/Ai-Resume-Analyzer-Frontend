@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { CardContent } from "@/components/ui/CardContend";
 import { UploadCloud, FileSearch, BarChart3 } from "lucide-react";
 
-export default function LandingPage() {
+export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
 

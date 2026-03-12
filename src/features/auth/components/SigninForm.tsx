@@ -69,7 +69,7 @@ const safeRedirect = redirect && redirect.startsWith("/") ? redirect :null;
         if (res.data.user?.role?.name === "admin") {
           router.push(safeRedirect || "/admin");
         } else {
-          router.push(safeRedirect || "/register");
+          router.push(safeRedirect || "/");
         }
       },
             onError: (err: {
