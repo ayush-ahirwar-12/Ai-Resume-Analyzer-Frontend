@@ -1,27 +1,46 @@
-import api from "@/config/axios";
 import axios from "axios";
+import api from "@/config/axios";
 
-export const uploadFile = async (file: File) => {
-    const filename = file.name + Date.now();
+interface UploadResponse {
+  url: string;
+  key: string;
+}
 
-    //get pre-signed url
-    const urlRes = await api.post("/api/upload-url", {
-        filename,
-        contentType: file.type
-    })
+export async function uploadFile(file: File) {
 
-    const { url, key } = urlRes.data;
+  if (file.type !== "application/pdf") {
+    throw new Error("Only PDF files are allowed");
+  }
 
+  const fileDetails = {
+    fileName: `${Date.now()}-${file.name}`,
+    fileType: file.type
+  };
 
-    //upload to s3
+  try {
+
+    // 1️⃣ Get presigned URL
+    const res = await api.post<UploadResponse>(
+      "/api/resume/upload-url",
+      fileDetails
+    );
+
+    const { url, key } = res.data;
+
+    // 2️⃣ Upload to S3
     await axios.put(url, file, {
-        headers: {
-            "Content-Type": file.type
-        }
-    })
+      headers: {
+        "Content-Type": file.type
+      }
+    });
 
-//save metadata
-    const saveRes = await api.post("/api/save")
+    return {
+      key,
+      fileName: fileDetails.fileName
+    };
 
-
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
 }
